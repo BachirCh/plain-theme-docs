@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Index theme documentation</title>
+<meta name="description" content="Set up and customise the Index Shopify theme: navigation rail, index entries, plates, home sections, product page, collections, cart and global settings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --paper: #f3eee4; --ink: #1d1b17; --muted: #5e584d; --rule: #cdc3b1; --tint: #e9e2d4; --matte: #faf7f0; --rubric: #8e2f21; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Instrument Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.65; }
+  a { color: inherit; text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
+  .label { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; }
+  .muted { color: var(--muted); }
+  .rubric { color: var(--rubric); }
+  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .84em; background: var(--tint); padding: .08em .35em; }
+  .shell { display: grid; grid-template-columns: 13rem minmax(0, 1fr); min-height: 100vh; }
+  .rail { position: sticky; top: 0; align-self: start; height: 100vh; display: flex; flex-direction: column; border-inline-end: 1px solid var(--ink); background: var(--paper); }
+  .rail__brand { padding: 1.5rem 1.25rem 1.25rem; border-bottom: 1px solid var(--ink); }
+  .rail__mono { display: grid; place-items: center; inline-size: 3.25rem; block-size: 3.25rem; border: 1px solid var(--ink); box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px rgba(29,27,23,.45); font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.5rem; }
+  .rail__brand p { margin: .75rem 0 0; }
+  .rail nav { overflow-y: auto; padding: .5rem 0 1rem; flex: 1; }
+  .rail ol { list-style: none; margin: 0; padding: 0; }
+  .rail a { display: grid; gap: 0; padding: .55rem 1.25rem; text-decoration: none; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; line-height: 1.15; border-inline-end: 2px solid transparent; }
+  .rail a span { font-family: "IBM Plex Mono", monospace; font-size: .625rem; letter-spacing: .08em; color: var(--muted); }
+  .rail a:hover { color: var(--rubric); }
+  .rail a:hover span { color: var(--rubric); }
+  main { min-width: 0; padding: 0 clamp(1.25rem, 4vw, 3.5rem) 4rem; }
+  .masthead { max-width: 60rem; padding: 3rem 0 2.5rem; border-bottom: 1px solid var(--ink); }
+  .masthead__run { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: .75rem; border-bottom: 1px solid var(--ink); margin-bottom: 2.5rem; }
+  h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 400; font-size: clamp(3.5rem, 10vw, 7rem); line-height: .95; margin: 0 0 1.25rem; letter-spacing: -.02em; }
+  h1 em { color: var(--rubric); }
+  .lede { font-size: 1.15rem; max-width: 38rem; color: var(--muted); margin: 0; }
+  section { max-width: 60rem; padding: 3rem 0 0; }
+  section > .label { margin: 0 0 .5rem; }
+  h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 400; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.05; margin: 0 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--ink); }
+  h3 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 1.5rem; line-height: 1.15; margin: 2rem 0 .5rem; }
+  p, li { max-width: 44rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .95rem; }
+  th, td { text-align: left; vertical-align: top; padding: .65rem 1rem .65rem 0; border-bottom: 1px solid var(--rule); }
+  thead th { font-family: "IBM Plex Mono", monospace; font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 400; color: var(--muted); border-bottom: 1px solid var(--ink); }
+  td:first-child { font-weight: 600; min-width: 9rem; }
+  .table-wrap { overflow-x: auto; }
+  .note { background: var(--matte); border: 1px solid var(--ink); box-shadow: inset 0 0 0 4px var(--matte), inset 0 0 0 5px rgba(29,27,23,.35); padding: 1.25rem 1.5rem; margin: 1.5rem 0; max-width: 44rem; }
+  .note p { margin: 0; }
+  .steps { list-style: none; counter-reset: s; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding: .25rem 0 .25rem 3rem; margin-bottom: .5rem; }
+  .steps li::before { content: counter(s, decimal-leading-zero); position: absolute; inset-inline-start: 0; top: .5rem; font-family: "IBM Plex Mono", monospace; font-size: .75rem; color: var(--rubric); }
+  details { border-top: 1px solid var(--rule); max-width: 44rem; }
+  details:last-of-type { border-bottom: 1px solid var(--rule); }
+  summary { cursor: pointer; padding: .9rem 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.25rem; }
+  details p { margin: 0 0 1rem; }
+  footer { max-width: 60rem; margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--ink); }
+  .skip { position: absolute; inset-inline-start: -999px; }
+  .skip:focus { inset-inline-start: 1rem; top: 1rem; background: var(--ink); color: var(--paper); padding: .5rem 1rem; z-index: 5; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { position: static; height: auto; border-inline-end: 0; border-bottom: 1px solid var(--ink); }
+    .rail nav { padding: 0 0 .75rem; }
+    .rail ol { columns: 2; }
+    .rail a { padding-block: .4rem; }
+  }
+  @media (max-width: 520px) { .rail ol { columns: 1; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#start">Skip to content</a>
+<div class="shell">
+  <aside class="rail">
+    <div class="rail__brand">
+      <span class="rail__mono" aria-hidden="true">In</span>
+      <p class="label muted">Documentation<br>Version 1.0.0</p>
+    </div>
+    <nav aria-label="Contents">
+      <ol>
+        <li><a href="#overview"><span>01</span>Overview</a></li>
+        <li><a href="#install"><span>02</span>Install</a></li>
+        <li><a href="#presets"><span>03</span>Preset and style</a></li>
+        <li><a href="#header"><span>04</span>Header and navigation</a></li>
+        <li><a href="#entries"><span>05</span>Index entries and plates</a></li>
+        <li><a href="#home"><span>06</span>Home sections</a></li>
+        <li><a href="#product"><span>07</span>Product page</a></li>
+        <li><a href="#collection"><span>08</span>Collection and search</a></li>
+        <li><a href="#cart"><span>09</span>Cart</a></li>
+        <li><a href="#pages"><span>10</span>Other pages</a></li>
+        <li><a href="#settings"><span>11</span>Global settings</a></li>
+        <li><a href="#locale"><span>12</span>Languages and RTL</a></li>
+        <li><a href="#quality"><span>13</span>Performance and accessibility</a></li>
+        <li><a href="#support"><span>14</span>Support</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main id="start">
+    <header class="masthead">
+      <div class="masthead__run label"><span class="rubric">Theme documentation</span><span class="muted">Shopify Online Store 2.0</span></div>
+      <h1>Index<em>.</em></h1>
+      <p class="lede">A theme that lays a store out like a printed catalogue: a fixed navigation rail, numbered index entries, framed plates with figure captions, and a set of editorial sections to explain what you sell.</p>
+    </header>
+
+    <section id="overview">
+      <p class="label muted">01</p>
+      <h2>Overview</h2>
+      <p>Index is built on three ideas that repeat on every page.</p>
+      <ul>
+        <li><strong>The rail.</strong> On desktop the menu is a vertical rail fixed to the start edge of the page. Items are numbered, and items with sub-links slide a panel out beside the rail. Below 990&nbsp;px the rail becomes a slim top bar with a full-screen <em>Index</em> menu.</li>
+        <li><strong>Index entries.</strong> Products are listed as numbered entries: a catalogue number, the name, an optional key ingredient and concentration, the type and number of sizes, the price and a quick-add button. The same entry renders as a ruled list row or as a plate in a grid.</li>
+        <li><strong>Plates.</strong> Every image sits in a plate: a paper matte, a keyline and a numbered caption (&ldquo;Fig. 3&rdquo;).</li>
+      </ul>
+      <p>The theme is written for shops that need to explain their products, such as skincare, haircare, food, supplements and books, but nothing in it is tied to a category. Product details such as key ingredient are read from optional metafields (see <a href="#product">Product page</a>) and are skipped when empty.</p>
+    </section>
+
+    <section id="install">
+      <p class="label muted">02</p>
+      <h2>Install</h2>
+      <ol class="steps">
+        <li>In Shopify admin go to <strong>Online Store &rarr; Themes</strong>, add the theme and click <strong>Customize</strong>.</li>
+        <li>Under <strong>Theme settings &rarr; Logo and monogram</strong> upload a logo, or type a two or three letter monogram. With neither, the initials of your store name are used.</li>
+        <li>In the <strong>Navigation rail</strong> section (header group) choose your menu. It uses <code>main-menu</code> by default.</li>
+        <li>Open the home page and click each section to choose your own products, collections and images. Empty slots show placeholders until you do.</li>
+        <li>For product cards to show a key ingredient and concentration, fill the product metafields described in <a href="#product">Product page</a>. This is optional.</li>
+        <li>Check the mobile view with the device toggle in the editor, then save.</li>
+      </ol>
+      <div class="note"><p>The theme ships with starter text on the home page, About, Contact and FAQ templates. Replace it with your own; nothing in it is tied to a product or collection.</p></div>
+    </section>
+
+    <section id="presets">
+      <p class="label muted">03</p>
+      <h2>Preset and style</h2>
+      <p>The theme has one preset, <strong>Index</strong>: paper background, ink text, one rubric-red accent, Cormorant Garamond headings, Instrument Sans text and IBM Plex Mono labels, with product images filled to the plate. You can change the look without editing code:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>To change</th><th>Go to</th></tr></thead>
+        <tbody>
+          <tr><td>Colours</td><td>Theme settings &rarr; Colors: paper, ink, faded ink, hairline rules, field borders, plate matte, tinted section, accent, buttons, reduced-price and in-stock colours.</td></tr>
+          <tr><td>Fonts and sizes</td><td>Theme settings &rarr; Typography: display serif, display size (80&ndash;130%), letter spacing, text font and size, label font, and whether labels are set in capitals.</td></tr>
+          <tr><td>Plate frame</td><td>Theme settings &rarr; Plates: matte width, keyline, double rule or matte only, captions on or off, tone images to the paper.</td></tr>
+          <tr><td>Corners</td><td>Theme settings &rarr; Shapes: separate radii for plates, buttons and inputs (all square by default).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="header">
+      <p class="label muted">04</p>
+      <h2>Header and navigation</h2>
+      <p>The header group holds an announcement bar (<em>Notice line</em>) and the <em>Navigation rail</em>.</p>
+      <h3>Desktop rail (990&nbsp;px and wider)</h3>
+      <p>The rail shows the logo or monogram, the numbered menu, search, account and cart. Items with sub-links open a panel beside the rail on hover, focus or click; the panel lists second-level links numbered like &ldquo;2.1&rdquo;, with third-level links beneath, and a link to the whole section. Keyboard: the arrow keys move between links and <kbd>Esc</kbd> closes the panel and returns focus to its item.</p>
+      <h3>Mobile and tablet</h3>
+      <p>A slim top bar shows the brand, search, cart and an <em>Index</em> button that opens a full-screen list of the same menu, numbered, with sub-links underneath.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>Menu</td><td>The menu shown in the rail and in the mobile Index menu.</td></tr>
+          <tr><td>Caption under the monogram</td><td>A short line under the monogram in the rail, for example a founding year. Hidden when a logo is uploaded.</td></tr>
+          <tr><td>Spine text</td><td>Text set vertically along the rail like the spine of a book. It is hidden on short screens.</td></tr>
+          <tr><td>Keep the mobile bar in view</td><td>Makes the top bar sticky on mobile and tablet.</td></tr>
+          <tr><td>Panel plate</td><td>Image, figure number and caption shown at the foot of every rail panel. Optional.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Notice line</h3>
+      <p>Add up to five <em>Message</em> blocks, each with text and an optional link, and choose the background and text colours. Messages sit side by side in one row; there is no rotation.</p>
+    </section>
+
+    <section id="entries">
+      <p class="label muted">05</p>
+      <h2>Index entries and plates</h2>
+      <p>Wherever the theme lists products (home, collection, search, recommendations) it uses the same entry. Sections that list products let you choose <strong>List</strong> or <strong>Plates</strong> as the default. The home index, collection pages and search results add a toggle so visitors can switch; collection pages remember the choice for the visit.</p>
+      <ul>
+        <li><strong>List.</strong> A ruled row per product. On devices with a mouse, hovering or focusing a row lifts its plate beside the row. On touch devices and below 990&nbsp;px each row shows a small plate at its start.</li>
+        <li><strong>Plates.</strong> A grid of framed plates with the number, name, details and price under each. Columns are set per section (2&ndash;5 on desktop).</li>
+      </ul>
+      <p>Each entry shows the catalogue number (position in the list), name, key ingredient and concentration when set, product type and number of sizes, price (with &ldquo;From&rdquo; for variable prices) and a quick-add button. Products with a single variant add straight to the cart; products with options open a quick view with the variant picker.</p>
+      <h3>Marginal notes</h3>
+      <p>Instead of coloured badges, small labels are printed beside the entry number: <em>Sold out</em>, <em>Reduced</em> (as a percentage or as a word), <em>New entry</em> and <em>Scarce</em>. The last two are driven by product tags, which you name in <strong>Theme settings &rarr; Index entries</strong> (defaults <code>new</code> and <code>selling-fast</code>).</p>
+      <h3>Card settings</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Setting</th><th>Where</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Catalogue number prefix</td><td>Index entries</td><td>&ldquo;No.&rdquo; by default.</td></tr>
+          <tr><td>Figure prefix</td><td>Index entries</td><td>&ldquo;Fig.&rdquo; by default.</td></tr>
+          <tr><td>Show key ingredient and concentration</td><td>Index entries</td><td>Reads <code>sixth.key_ingredient</code> and <code>sixth.concentration</code>.</td></tr>
+          <tr><td>Show product type / rating</td><td>Index entries</td><td>Rating reads <code>reviews.rating</code> (the metafield most review apps write).</td></tr>
+          <tr><td>Enable quick add</td><td>Index entries</td><td>Turns the add and choose-size buttons on or off.</td></tr>
+          <tr><td>Product plate ratio and fit</td><td>Plates</td><td>Square, portrait or tall; fit the whole product or fill and crop the plate.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="home">
+      <p class="label muted">06</p>
+      <h2>Home sections</h2>
+      <p>These sections are available on every template. Each has top and bottom padding sliders; those marked <em>Tinted</em> can sit on a tinted background.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Section</th><th>Use it for</th><th>Blocks and key settings</th></tr></thead>
+        <tbody>
+          <tr><td>Masthead</td><td>The opening statement of the page, set like the front of a periodical.</td><td>Volume and issue lines, current month, kicker, statement (italic words take the accent colour), lede, primary button and secondary link, an &ldquo;In this issue&rdquo; contents list (one item per line), and a featured plate: choose a product (its key ingredient and price print underneath) or an image with figure number and caption. Option to use it as the page&rsquo;s main heading, and to place the plate first.</td></tr>
+          <tr><td>The Index</td><td>A numbered list or plate grid of products from a collection.</td><td>Running head, heading, text, collection, entries shown (2&ndash;24), list or plates, optional visitor toggle, plate columns, link label and footnote.</td></tr>
+          <tr><td>Ingredient glossary</td><td>Definitions of terms, grouped under letters (up to 30).</td><td><em>Term</em> blocks: term, class, also known as, definition, and a &ldquo;match&rdquo; text. Products in the chosen collection whose key ingredient contains the match text are listed under the term. Jump-to-letter links are generated.</td></tr>
+          <tr><td>Monograph</td><td>A long-form story beside a framed plate.</td><td>Blocks: <em>Text</em>, <em>Pull quote</em>, <em>Figure</em>, <em>Footnotes</em> (four notes) and <em>Link</em> (link or button), up to 12. Settings: reading time, byline, plate, drop capital, plate on the other side, tinted.</td></tr>
+          <tr><td>Chapters</td><td>A numbered table of contents that links to collections.</td><td><em>Chapter</em> blocks (up to 24): collection, optional title and description. Entry counts come from the collection.</td></tr>
+          <tr><td>Notes column</td><td>Customer reviews or letters, printed as received.</td><td><em>Note</em> blocks (up to 12): quote, author, detail, rating (0&ndash;5) and an optional product link. A headline figure and label (for example an average score) are typed in by hand.</td></tr>
+          <tr><td>Principles</td><td>Short statements of what you stand for.</td><td><em>Principle</em> blocks (up to 8): icon (leaf, earth, atom, drop-off, shield, heart, sparkle or none), title, text. 2&ndash;4 columns.</td></tr>
+          <tr><td>Journal subscription</td><td>An email sign-up set as a printed form.</td><td>Form label, seal text (shown when no image is chosen), plate, kicker, heading, text, optional first name field, button label and consent note. Submits to Shopify&rsquo;s customer form and tags the contact <code>newsletter</code>.</td></tr>
+          <tr><td>Queries</td><td>Frequently asked questions as an accordion.</td><td>Blocks: <em>Group heading</em> and <em>Question</em> (up to 30). Options: open the first question, add FAQ structured data, use as the page heading, and a link to contact you.</td></tr>
+          <tr><td>Cross-references</td><td>Product recommendations.</td><td>List or plates, maximum products (2&ndash;10), related or complementary, and a fallback collection. Loaded after the page from Shopify&rsquo;s recommendations.</td></tr>
+          <tr><td>Contact form</td><td>Contact page.</td><td><em>Contact detail</em> blocks (up to 4) with icon (mail, map pin, clock, question), title and text.</td></tr>
+        </tbody>
+      </table></div>
+      <p>The sample home page runs Masthead, The Index, Ingredient glossary, Monograph, Chapters, Notes column and Journal subscription in that order. Sections are numbered (&ldquo;&sect; 02&rdquo;) automatically, so the numbers stay right when you reorder them.</p>
+    </section>
+
+    <section id="product">
+      <p class="label muted">07</p>
+      <h2>Product page</h2>
+      <p>The product page (<em>Formula sheet</em>) is block based. Use <strong>Add block</strong> in the editor to add, remove and reorder any of the blocks below. App blocks can be added anywhere among them.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Block</th><th>What it shows</th></tr></thead>
+        <tbody>
+          <tr><td>Formula number</td><td>The catalogue number, product type and marginal notes. Optionally the vendor.</td></tr>
+          <tr><td>Text</td><td>A line of custom text, or the vendor or product type, in lead, label or body style.</td></tr>
+          <tr><td>Title</td><td>The product name (the page&rsquo;s h1).</td></tr>
+          <tr><td>Rating</td><td>Stars from the <code>reviews.rating</code> metafield.</td></tr>
+          <tr><td>Marginal notes</td><td>Sold out, reduced, new and scarce labels.</td></tr>
+          <tr><td>Price</td><td>Price, compare-at price and, optionally, a tax and shipping note.</td></tr>
+          <tr><td>Specification table</td><td>Rows for key ingredient (with a link to search other products containing it), concentration, pH (with a small scale), skin type and texture. Each row can be hidden and relabelled; empty rows are skipped.</td></tr>
+          <tr><td>Description</td><td>The product description, optionally truncated and opened with a drop capital.</td></tr>
+          <tr><td>Stock status</td><td>In stock, quantity in stock and a low-stock message below a threshold you set.</td></tr>
+          <tr><td>Variant picker</td><td>Options as ruled boxes with a tick mark. Changing a variant updates price, image, button state and the page URL without reloading.</td></tr>
+          <tr><td>Buy buttons</td><td>Quantity selector, add to cart and the dynamic checkout button.</td></tr>
+          <tr><td>Directions</td><td>Up to five numbered steps.</td></tr>
+          <tr><td>Composition</td><td>A boxed ingredient list; the key ingredient can be marked in the list.</td></tr>
+          <tr><td>Service notes</td><td>Up to three icon and text lines (shipping, returns and so on).</td></tr>
+          <tr><td>Pickup availability, SKU</td><td>Store pickup and SKU, when relevant.</td></tr>
+          <tr><td>Collapsible note</td><td>An accordion with rich text, the product description, or the content of a page.</td></tr>
+          <tr><td>Share</td><td>Copy-link button and an optional &ldquo;Ask a question&rdquo; link.</td></tr>
+          <tr><td>Custom Liquid</td><td>Your own Liquid.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Section settings</h3>
+      <p><strong>Catalogue collection</strong> sets the collection used for the formula number, which is the product&rsquo;s position in it (up to the first 50 products). <strong>Plate ratio</strong> (natural, square, portrait, tall), <strong>keep plates in view</strong> while the sheet scrolls, and showing or hiding the running-head path. Images open in a lightbox; on mobile they swipe with numbered dots.</p>
+      <h3>Metafields</h3>
+      <p>Create these product metafield definitions in <strong>Settings &rarr; Custom data &rarr; Products</strong>. All are optional and single line text.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Namespace and key</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td><code>sixth.key_ingredient</code></td><td>Cards, quick view, specification table, glossary matching, cart lines.</td></tr>
+          <tr><td><code>sixth.concentration</code></td><td>Cards, specification table, cart lines.</td></tr>
+          <tr><td><code>sixth.ph</code></td><td>Specification table and quick view.</td></tr>
+          <tr><td><code>sixth.skin_type</code></td><td>Specification table.</td></tr>
+          <tr><td><code>sixth.texture</code></td><td>Specification table and card captions.</td></tr>
+          <tr><td><code>reviews.rating</code></td><td>Stars on cards and the product page (written by most review apps).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="collection">
+      <p class="label muted">08</p>
+      <h2>Collection and search</h2>
+      <p>Collection pages (<em>Catalogue index</em>) show a breadcrumb, entry count, title and description, then a toolbar and the entries.</p>
+      <ul>
+        <li><strong>Filtering.</strong> The <em>Catalogue drawer</em> button opens a drawer with your Search &amp; Discovery filters (price range, availability, and any product filters you configure). Results update in place without reloading, active filters appear as removable chips, and the URL stays shareable.</li>
+        <li><strong>Sorting.</strong> The sort menu lists the collection&rsquo;s sort options. Sorting A&ndash;Z or Z&ndash;A adds letter dividers between groups of entries.</li>
+        <li><strong>Presentation.</strong> List or plates, with a visitor toggle.</li>
+        <li><strong>Pagination.</strong> Entries per page (8&ndash;48), with page links.</li>
+        <li><strong>Empty results.</strong> A &ldquo;No products found&rdquo; message with a clear-all button.</li>
+      </ul>
+      <p>The search page uses the same entries, with filtering, and lists matching pages and articles too. The search drawer offers suggestions (queries, collections, pages, articles and products with price) while typing; turn suggestions and prices off in <strong>Theme settings &rarr; Search</strong>.</p>
+      <p>The collection list page (<em>Table of chapters</em>) numbers collections with Roman numerals, with entry counts. Choose collections and sort order, and hide empty ones.</p>
+    </section>
+
+    <section id="cart">
+      <p class="label muted">09</p>
+      <h2>Cart</h2>
+      <p>Choose between a <strong>drawer</strong> and a <strong>page</strong> in Theme settings &rarr; Cart. The drawer opens after any add to cart; the page (<em>Order sheet</em>) is a numbered list of lines with small plates.</p>
+      <ul>
+        <li>Quantity buttons and remove, updated without reloading.</li>
+        <li><strong>Free shipping progress.</strong> Set a threshold in your store currency (0 hides it).</li>
+        <li><strong>Gift wrap.</strong> Pick a product in Theme settings &rarr; Cart; a checkbox on the cart page adds or removes it.</li>
+        <li><strong>Order note</strong> and a <strong>shipping estimator</strong> (country, province, postal code) on the cart page; each can be turned off.</li>
+        <li>Accelerated checkout buttons, and cross-references (recommendations) under the cart.</li>
+      </ul>
+    </section>
+
+    <section id="pages">
+      <p class="label muted">10</p>
+      <h2>Other pages</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Page</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Journal (blog)</td><td>Numbered entries with an optional featured latest entry, excerpts and a tag filter. Article pages have an optional featured image, author and drop capital, comments when the blog has them enabled, and a list of products.</td></tr>
+          <tr><td>Page templates</td><td>Default <em>page</em> plus alternates you can assign in the page editor: <code>about</code> (Page, Monograph and Principles), <code>contact</code> (Contact form), <code>faq</code> (Queries) and <code>policies</code>.</td></tr>
+          <tr><td>Password page</td><td>Image, kicker and heading for a store that is not open yet, with the store-owner login link.</td></tr>
+          <tr><td>404</td><td>A short message and a link back to shopping.</td></tr>
+          <tr><td>Gift card</td><td>A card with balance, code, QR code, expiry and an Apple Wallet link when available.</td></tr>
+          <tr><td>Footer (Colophon)</td><td>Up to six blocks: Text, Menu and one Newsletter. Also a closing line, an optional line naming the typefaces, policy menu, country and language selectors, payment icons and social links.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="settings">
+      <p class="label muted">11</p>
+      <h2>Global settings</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Group</th><th>Settings</th></tr></thead>
+        <tbody>
+          <tr><td>Logo and monogram</td><td>Logo, logo width (40&ndash;200&nbsp;px), monogram text, favicon.</td></tr>
+          <tr><td>Colors</td><td>Paper, ink, faded ink, hairline rules, field borders, plate matte, tinted section, accent, primary button and text, reduced-price and in-stock colours. Helper text states the contrast to keep.</td></tr>
+          <tr><td>Typography</td><td>Display font, display size, letter spacing (normal, tight, tighter), text font, text size, label font, label style.</td></tr>
+          <tr><td>Layout</td><td>Page width (narrow 1160, standard 1320, wide 1520&nbsp;px), side margin, space between sections, rail width (88&ndash;136&nbsp;px, desktop only).</td></tr>
+          <tr><td>Shapes</td><td>Plate, button and input corner radius.</td></tr>
+          <tr><td>Plates</td><td>Matte width, frame style, captions, tone images to the paper, product plate ratio and fit.</td></tr>
+          <tr><td>Index entries</td><td>Number and figure prefixes, ingredient, type and rating display, quick add, sale display, new and scarce tags.</td></tr>
+          <tr><td>Cart</td><td>Drawer or page, free shipping threshold, gift wrap product, order note, shipping estimator.</td></tr>
+          <tr><td>Social media</td><td>Facebook, X, Instagram, TikTok, Pinterest, YouTube links for the footer.</td></tr>
+          <tr><td>Search</td><td>Search suggestions and prices in suggestions.</td></tr>
+          <tr><td>Animation</td><td>Reveal sections on scroll, and enlarge plates slightly on hover. Both respect the visitor&rsquo;s reduced-motion setting.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="locale">
+      <p class="label muted">12</p>
+      <h2>Languages and RTL</h2>
+      <p>Storefront text lives in <code>locales/en.default.json</code> and editor labels in <code>en.default.schema.json</code>. Translate them with the <strong>Translate &amp; Adapt</strong> app or by adding locale files. Text you type in the editor is translated in the same app.</p>
+      <p>The footer can show country/currency and language selectors when your store has more than one of each (turn them off in the Colophon section). For Arabic, Hebrew, Persian and Urdu the page direction is set to right-to-left automatically. The stylesheet uses logical properties throughout, so the rail, panels, drawers, arrows, entries and tables mirror without a separate stylesheet. User-entered text is set with automatic direction so mixed-language content reads correctly.</p>
+    </section>
+
+    <section id="quality">
+      <p class="label muted">13</p>
+      <h2>Performance and accessibility</h2>
+      <ul>
+        <li>A shared stylesheet plus small per-section styles, and one deferred script; no third-party scripts or libraries. Fonts come from Shopify&rsquo;s font CDN and the body and display fonts are preloaded.</li>
+        <li>Images at the top of a page (the masthead plate, the product image, the first entries of a list) load eagerly with high fetch priority; the rest are lazy and use responsive <code>srcset</code>. Reveal-on-scroll only hides content that starts below the fold, so it never delays the first paint.</li>
+        <li>Every page has one h1 and an unbroken heading order, a skip link, labelled form fields, visible focus outlines and descriptive names for icon buttons.</li>
+        <li>Drawers, the quick view and the lightbox keep keyboard focus inside while open, close with <kbd>Esc</kbd> and return focus to the control that opened them. The rail panels are keyboard operable.</li>
+        <li>Default colours meet WCAG AA contrast (4.5:1 for text). If you change colours, the editor notes give the ratio to keep.</li>
+        <li>Links, filter forms and the add-to-cart form work without JavaScript; in-place filtering, cart updates and quick view are enhancements.</li>
+      </ul>
+    </section>
+
+    <section id="support">
+      <p class="label muted">14</p>
+      <h2>Support</h2>
+      <details><summary>Product cards show no key ingredient.</summary><p>Create the <code>sixth.key_ingredient</code> and <code>sixth.concentration</code> metafield definitions with storefront access, fill them on the product, and check that <em>Show key ingredient and concentration</em> is on in Theme settings &rarr; Index entries.</p></details>
+      <details><summary>The formula number is missing on the product page.</summary><p>The number is the product&rsquo;s position in the <em>Catalogue collection</em> chosen in the product section. Choose a collection that contains the product; only the first 50 products are counted.</p></details>
+      <details><summary>The rail shows the wrong menu.</summary><p>Open the Navigation rail section in the header group and select the menu. Sub-links appear as panels only for items that have child links.</p></details>
+      <details><summary>Gift wrap does nothing.</summary><p>Choose the gift wrap product in Theme settings &rarr; Cart. The product must be published to the Online Store.</p></details>
+      <p>For help with the theme, contact the theme author through the support link in your Shopify theme library.</p>
+    </section>
+
+    <footer class="label muted">Index theme documentation &middot; Version 1.0.0 &middot; Built on Shopify&rsquo;s Skeleton theme</footer>
+  </main>
+</div>
+</body>
+</html>
